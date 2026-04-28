@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useMFA } from '@/hooks/useMFA'
+import MFAQRCode from '@/components/dashboard/MFAQRCode'
 import {
   User, Shield, Bell, CreditCard, Database,
   Lock, Smartphone, LogOut, Download, AlertTriangle,
@@ -391,10 +392,13 @@ export default function ConfiguracoesPage() {
                       </p>
                       <div className="flex items-center gap-4">
                         {mfa.qrCode ? (
-                          <img src={mfa.qrCode} alt="QR Code MFA"
-                            className="w-28 h-28 rounded-xl flex-shrink-0 object-contain"
-                            style={{ border: '1.5px solid var(--bdr)', background: '#fff', padding: 8 }} />
+                          <MFAQRCode uri={mfa.qrCode} />
                         ) : (
+
+
+
+
+
                           <div className="w-28 h-28 rounded-xl flex items-center justify-center flex-shrink-0"
                             style={{ border: '1.5px solid var(--bdr)', background: 'var(--surf)' }}>
                             <RefreshCw size={22} className="animate-spin" style={{ color: 'var(--ink-4)' }} />
