@@ -6,12 +6,13 @@ import { Bell, Plus, Wrench, DollarSign, Sparkles, X, CheckCheck } from 'lucide-
 import { getSaudacao } from '@/lib/utils'
 
 const pages: Record<string, { title: string; sub: string }> = {
-  '/dashboard':               { title: 'Dashboard',       sub: 'Resumo geral dos seus veículos'    },
-  '/dashboard/veiculos':      { title: 'Meus veículos',   sub: 'Gerencie sua frota pessoal'        },
-  '/dashboard/manutencoes':   { title: 'Manutenções',     sub: 'Revisões e serviços agendados'     },
-  '/dashboard/despesas':      { title: 'Despesas',        sub: 'Controle financeiro dos veículos'  },
-  '/dashboard/ia':            { title: 'Assistente IA',   sub: 'Análise inteligente dos seus dados'},
-  '/dashboard/configuracoes': { title: 'Configurações',   sub: 'Perfil e preferências da conta'   },
+  '/dashboard':                { title: 'Dashboard',       sub: 'Resumo geral dos seus veículos'    },
+  '/dashboard/veiculos':       { title: 'Meus veículos',   sub: 'Gerencie sua frota pessoal'        },
+  '/dashboard/manutencoes':    { title: 'Manutenções',     sub: 'Revisões e serviços agendados'     },
+  '/dashboard/despesas':       { title: 'Despesas',        sub: 'Controle financeiro dos veículos'  },
+  '/dashboard/relatorios':     { title: 'Relatórios',      sub: 'Análise de gastos e gráficos'      },
+  '/dashboard/ia':             { title: 'Assistente IA',   sub: 'Análise inteligente dos seus dados'},
+  '/dashboard/configuracoes':  { title: 'Configurações',   sub: 'Perfil e preferências da conta'   },
 }
 
 const ctas: Record<string, { label: string; href: string }> = {
@@ -58,17 +59,17 @@ const notificacoesIniciais: Notif[] = [
 ]
 
 const iconeTipo = {
-  manutencao: { icon: Wrench,     bg: 'var(--amber-bg)',   color: 'var(--amber)' },
+  manutencao: { icon: Wrench,     bg: 'var(--amber-bg)',   color: 'var(--amber)'   },
   despesa:    { icon: DollarSign, bg: 'var(--emerald-bg)', color: 'var(--emerald)' },
-  ia:         { icon: Sparkles,   bg: 'var(--violet-bg)',  color: 'var(--violet)' },
+  ia:         { icon: Sparkles,   bg: 'var(--violet-bg)',  color: 'var(--violet)'  },
 }
 
 type Props = { userName: string }
 
 export default function Topbar({ userName }: Props) {
   const pathname = usePathname()
-  const [aberto,   setAberto]   = useState(false)
-  const [notifs,   setNotifs]   = useState<Notif[]>(notificacoesIniciais)
+  const [aberto, setAberto]   = useState(false)
+  const [notifs, setNotifs]   = useState<Notif[]>(notificacoesIniciais)
   const painelRef = useRef<HTMLDivElement>(null)
 
   const page = pages[pathname] ?? { title: 'AutoGest', sub: '' }
@@ -76,7 +77,6 @@ export default function Topbar({ userName }: Props) {
   const nome = userName?.split(' ')[0] || 'usuário'
   const naoLidas = notifs.filter(n => !n.lida).length
 
-  // Fecha o painel ao clicar fora
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (painelRef.current && !painelRef.current.contains(e.target as Node)) {
@@ -116,7 +116,6 @@ export default function Topbar({ userName }: Props) {
           </Link>
         )}
 
-        {/* Botão sino + painel */}
         <div style={{ position: 'relative' }} ref={painelRef}>
           <button
             className="notif-btn"
@@ -127,24 +126,17 @@ export default function Topbar({ userName }: Props) {
             {naoLidas > 0 && <span className="notif-dot" />}
           </button>
 
-          {/* Painel de notificações */}
           {aberto && (
             <div style={{
-              position: 'absolute',
-              top: 'calc(100% + 10px)',
-              right: 0,
-              width: 340,
-              background: 'var(--surf)',
+              position: 'absolute', top: 'calc(100% + 10px)', right: 0,
+              width: 340, background: 'var(--surf)',
               border: '1.5px solid var(--bdr)',
               borderRadius: 'var(--r-lg)',
               boxShadow: '0 8px 32px rgba(0,0,0,.12)',
-              zIndex: 1000,
-              overflow: 'hidden',
+              zIndex: 1000, overflow: 'hidden',
             }}>
-              {/* Header do painel */}
               <div style={{
-                display: 'flex',
-                alignItems: 'center',
+                display: 'flex', alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '14px 16px',
                 borderBottom: '1.5px solid var(--bdr)',
@@ -158,102 +150,51 @@ export default function Topbar({ userName }: Props) {
                   )}
                 </div>
                 {naoLidas > 0 && (
-                  <button
-                    onClick={marcarTodasLidas}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 4,
-                      fontSize: 11, fontWeight: 600, color: 'var(--brand)',
-                      background: 'none', border: 'none', cursor: 'pointer',
-                    }}
-                  >
-                    <CheckCheck size={13} />
-                    Marcar todas como lidas
+                  <button onClick={marcarTodasLidas}
+                    style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, color: 'var(--brand)', background: 'none', border: 'none', cursor: 'pointer' }}>
+                    <CheckCheck size={13} /> Marcar todas como lidas
                   </button>
                 )}
               </div>
 
-              {/* Lista */}
               <div style={{ maxHeight: 360, overflowY: 'auto' }}>
                 {notifs.length === 0 ? (
-                  <div style={{
-                    padding: '40px 24px', textAlign: 'center',
-                    fontSize: 13, color: 'var(--ink-4)',
-                  }}>
+                  <div style={{ padding: '40px 24px', textAlign: 'center', fontSize: 13, color: 'var(--ink-4)' }}>
                     Nenhuma notificação
                   </div>
                 ) : (
                   notifs.map(n => {
-                    const t = iconeTipo[n.tipo]
+                    const t    = iconeTipo[n.tipo]
                     const Icon = t.icon
                     return (
-                      <div
-                        key={n.id}
-                        onClick={() => marcarLida(n.id)}
+                      <div key={n.id} onClick={() => marcarLida(n.id)}
                         style={{
-                          display: 'flex',
-                          gap: 12,
-                          padding: '12px 16px',
+                          display: 'flex', gap: 12, padding: '12px 16px',
                           borderBottom: '1px solid var(--bdr)',
                           background: n.lida ? 'var(--surf)' : 'var(--brand-bg)',
-                          cursor: 'pointer',
-                          transition: 'background .1s',
+                          cursor: 'pointer', transition: 'background .1s',
                           position: 'relative',
-                        }}
-                      >
-                        {/* Ícone */}
-                        <div style={{
-                          width: 34, height: 34,
-                          borderRadius: 9,
-                          background: t.bg,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0,
                         }}>
+                        <div style={{ width: 34, height: 34, borderRadius: 9, background: t.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           <Icon size={16} style={{ color: t.color }} />
                         </div>
-
-                        {/* Conteúdo */}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{
-                            fontSize: 12, fontWeight: n.lida ? 500 : 700,
-                            color: 'var(--ink)', marginBottom: 3,
-                            lineHeight: 1.3,
-                          }}>
+                          <p style={{ fontSize: 12, fontWeight: n.lida ? 500 : 700, color: 'var(--ink)', marginBottom: 3, lineHeight: 1.3 }}>
                             {n.titulo}
                           </p>
-                          <p style={{
-                            fontSize: 11, color: 'var(--ink-3)',
-                            lineHeight: 1.4, marginBottom: 4,
-                          }}>
+                          <p style={{ fontSize: 11, color: 'var(--ink-3)', lineHeight: 1.4, marginBottom: 4 }}>
                             {n.descricao}
                           </p>
                           <p style={{ fontSize: 10, color: 'var(--ink-4)', fontWeight: 600 }}>
                             {n.tempo}
                           </p>
                         </div>
-
-                        {/* Botão remover */}
-                        <button
-                          onClick={e => { e.stopPropagation(); remover(n.id) }}
-                          style={{
-                            position: 'absolute', top: 10, right: 10,
-                            width: 20, height: 20,
-                            borderRadius: 6,
-                            background: 'none', border: 'none',
-                            cursor: 'pointer', color: 'var(--ink-4)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          }}
-                        >
+                        <button onClick={e => { e.stopPropagation(); remover(n.id) }}
+                          style={{ position: 'absolute', top: 10, right: 10, width: 20, height: 20, borderRadius: 6, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <X size={12} />
                         </button>
-
-                        {/* Ponto de não lida */}
                         {!n.lida && (
-                          <div style={{
-                            position: 'absolute', top: 16, right: 32,
-                            width: 6, height: 6,
-                            borderRadius: '50%',
-                            background: 'var(--brand)',
-                          }} />
+                          <div style={{ position: 'absolute', top: 16, right: 32, width: 6, height: 6, borderRadius: '50%', background: 'var(--brand)' }} />
                         )}
                       </div>
                     )
@@ -261,21 +202,9 @@ export default function Topbar({ userName }: Props) {
                 )}
               </div>
 
-              {/* Footer */}
-              <div style={{
-                padding: '10px 16px',
-                borderTop: '1.5px solid var(--bdr)',
-                background: 'var(--surf-2)',
-              }}>
-                <Link
-                  href="/dashboard/configuracoes"
-                  onClick={() => setAberto(false)}
-                  style={{
-                    fontSize: 12, fontWeight: 600,
-                    color: 'var(--brand)', textDecoration: 'none',
-                    display: 'block', textAlign: 'center',
-                  }}
-                >
+              <div style={{ padding: '10px 16px', borderTop: '1.5px solid var(--bdr)', background: 'var(--surf-2)' }}>
+                <Link href="/dashboard/configuracoes" onClick={() => setAberto(false)}
+                  style={{ fontSize: 12, fontWeight: 600, color: 'var(--brand)', textDecoration: 'none', display: 'block', textAlign: 'center' }}>
                   Gerenciar notificações →
                 </Link>
               </div>

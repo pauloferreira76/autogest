@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase'
 import { getInitials } from '@/lib/utils'
 import {
   LayoutDashboard, Car, Wrench,
-  DollarSign, Sparkles, Settings, LogOut,
+  DollarSign, Sparkles, Settings, LogOut, BarChart3,
 } from 'lucide-react'
 
 const nav = [
@@ -13,6 +13,7 @@ const nav = [
   { label: 'Meus veículos', href: '/dashboard/veiculos',    icon: Car,             group: 'main' },
   { label: 'Manutenções',   href: '/dashboard/manutencoes', icon: Wrench,          group: 'main' },
   { label: 'Despesas',      href: '/dashboard/despesas',    icon: DollarSign,      group: 'fin'  },
+  { label: 'Relatórios',    href: '/dashboard/relatorios',  icon: BarChart3,       group: 'fin'  },
   { label: 'Assistente IA', href: '/dashboard/ia',          icon: Sparkles,        group: 'fin'  },
 ]
 
@@ -37,7 +38,6 @@ export default function Sidebar({ userName, userEmail }: Props) {
 
   return (
     <aside className="sidebar">
-      {/* Logo */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">
           <Car size={18} className="text-white" />
@@ -45,7 +45,6 @@ export default function Sidebar({ userName, userEmail }: Props) {
         <span className="sidebar-logo-name">AutoGest</span>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 py-3 overflow-y-auto">
         <p className="sidebar-section">Principal</p>
         <div className="sidebar-nav">
@@ -92,7 +91,6 @@ export default function Sidebar({ userName, userEmail }: Props) {
         </div>
       </nav>
 
-      {/* Usuário */}
       <div className="sidebar-footer">
         <div className="sidebar-user">
           <div className="sidebar-avatar">{initials}</div>
