@@ -47,13 +47,14 @@ export default function CadastroPage() {
     setLoading(false)
   }
 
-  async function handleGoogle() {
-    setLoading(true)
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    })
-  }
+async function handleGoogle() {
+  setLoading(true)
+  const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
+  await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo },
+  })
+}
 
   if (sucesso) {
     return (

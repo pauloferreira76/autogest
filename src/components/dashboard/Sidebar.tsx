@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
@@ -6,24 +7,25 @@ import { getInitials } from '@/lib/utils'
 import {
   LayoutDashboard, Car, Wrench, DollarSign,
   Sparkles, Settings, LogOut, ChevronRight,
+  Menu, X,
 } from 'lucide-react'
 
 const navItems = [
-  { label: 'Dashboard',     href: '/dashboard',              icon: LayoutDashboard, section: 'principal' },
-  { label: 'Meus veículos', href: '/dashboard/veiculos',     icon: Car,             section: 'principal' },
-  { label: 'Manutenções',   href: '/dashboard/manutencoes',  icon: Wrench,          section: 'principal' },
-  { label: 'Despesas',      href: '/dashboard/despesas',     icon: DollarSign,      section: 'financas'  },
-  { label: 'Assistente IA', href: '/dashboard/ia',           icon: Sparkles,        section: 'financas'  },
+  { label: 'Dashboard',     href: '/dashboard',             icon: LayoutDashboard, section: 'principal' },
+  { label: 'Meus veículos', href: '/dashboard/veiculos',    icon: Car,             section: 'principal' },
+  { label: 'Manutenções',   href: '/dashboard/manutencoes', icon: Wrench,          section: 'principal' },
+  { label: 'Despesas',      href: '/dashboard/despesas',    icon: DollarSign,      section: 'financas'  },
+  { label: 'Assistente IA', href: '/dashboard/ia',          icon: Sparkles,        section: 'financas'  },
 ]
 
 type Props = { userName: string; userEmail: string }
 
 export default function Sidebar({ userName, userEmail }: Props) {
-  const pathname = usePathname()
-  const router   = useRouter()
-  const supabase = createClient()
-
-  const initials = getInitials(userName, userEmail)
+  const pathname  = usePathname()
+  const router    = useRouter()
+  const supabase  = createClient()
+  const [open, setOpen] = useState(false)
+  const initials  = getInitials(userName, userEmail)
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -36,14 +38,20 @@ export default function Sidebar({ userName, userEmail }: Props) {
     return pathname.startsWith(href)
   }
 
-  return (
-    <aside className="w-[220px] min-w-[220px] h-screen bg-white border-r border-gray-100 flex flex-col">
+  const NavContent = () => (
+    <>
       {/* Logo */}
-      <div className="px-4 py-5 flex items-center gap-2.5 border-b border-gray-100">
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Car size={16} className="text-white" />
+      <div className="px-4 py-5 flex items-center justify-between border-b border-gray-100">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Car size={16} className="text-white" />
+          </div>
+          <span className="font-semibold text-[15px] text-gray-900">AutoGest</span>
         </div>
-        <span className="font-semibold text-[15px] text-gray-900">AutoGest</span>
+        {/* Botão fechar no mobile */}
+        <button onClick={() => setOpen(false)} className="lg:hidden p-1 rounded-lg hover:bg-gray-100">
+          <X size={18} className="text-gray-400" />
+        </button>
       </div>
 
       {/* Nav */}
@@ -54,7 +62,8 @@ export default function Sidebar({ userName, userEmail }: Props) {
         {navItems.filter(i => i.section === 'principal').map(item => (
           <Link
             key={item.href} href={item.href}
-            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors group ${
+            onClick={() => setOpen(false)}
+            className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-[13px] transition-colors group ${
               isActive(item.href)
                 ? 'bg-blue-50 text-blue-700 font-medium'
                 : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
@@ -75,7 +84,8 @@ export default function Sidebar({ userName, userEmail }: Props) {
           return (
             <Link
               key={item.href} href={item.href}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors group ${
+              onClick={() => setOpen(false)}
+              className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-[13px] transition-colors group ${
                 active
                   ? isIA ? 'bg-purple-50 text-purple-700 font-medium' : 'bg-blue-50 text-blue-700 font-medium'
                   : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
@@ -98,7 +108,8 @@ export default function Sidebar({ userName, userEmail }: Props) {
         <div className="mt-auto pt-4">
           <Link
             href="/dashboard/configuracoes"
-            className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
           >
             <Settings size={16} className="text-gray-400" />
             Configurações
@@ -121,6 +132,38 @@ export default function Sidebar({ userName, userEmail }: Props) {
           </button>
         </div>
       </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Botão hamburguer — só no mobile */}
+      <button
+        onClick={() => setOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-50 w-9 h-9 bg-white border border-gray-200 rounded-xl flex items-center justify-center shadow-sm"
+      >
+        <Menu size={18} className="text-gray-600" />
+      </button>
+
+      {/* Overlay — só no mobile quando aberto */}
+      {open && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/40 z-40"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      {/* Sidebar — drawer no mobile, fixa no desktop */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-50
+        w-[220px] min-w-[220px] h-screen
+        bg-white border-r border-gray-100
+        flex flex-col
+        transform transition-transform duration-200 ease-in-out
+        ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <NavContent />
+      </aside>
+    </>
   )
 }

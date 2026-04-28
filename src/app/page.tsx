@@ -59,7 +59,7 @@ export default function LandingPage() {
       <section className="max-w-4xl mx-auto px-6 py-24 text-center">
         <span className="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium mb-6">
           <Sparkles size={12} />
-          IA integrada com Claude
+          Inteligência Artificial integrada
         </span>
         <h1 className="text-5xl font-semibold text-gray-900 leading-tight mb-6">
           Gestão automotiva<br />

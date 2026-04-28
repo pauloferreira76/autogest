@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 * {
   box-sizing: border-box;
@@ -19,7 +19,6 @@ body {
   color: #111827;
 }
 
-/* Scrollbar discreta */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -35,14 +34,12 @@ body {
   background: #9ca3af;
 }
 
-/* Focus ring padrão */
 :focus-visible {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Inputs base */
 input, textarea, select {
   font-family: inherit;
 }

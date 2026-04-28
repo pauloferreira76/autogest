@@ -12,22 +12,20 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll()
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options as never)
           )
         },
       },
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
   const isAuthPage =
     request.nextUrl.pathname === '/login' ||
@@ -35,12 +33,10 @@ export async function middleware(request: NextRequest) {
 
   const isDashboard = request.nextUrl.pathname.startsWith('/dashboard')
 
-  // Não logado tentando acessar dashboard → login
   if (!user && isDashboard) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Logado tentando acessar login/cadastro → dashboard
   if (user && isAuthPage) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
