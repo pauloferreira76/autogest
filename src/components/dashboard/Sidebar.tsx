@@ -1,31 +1,28 @@
 'use client'
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { getInitials } from '@/lib/utils'
 import {
-  LayoutDashboard, Car, Wrench, DollarSign,
-  Sparkles, Settings, LogOut, ChevronRight,
-  Menu, X,
+  LayoutDashboard, Car, Wrench,
+  DollarSign, Sparkles, Settings, LogOut,
 } from 'lucide-react'
 
-const navItems = [
-  { label: 'Dashboard',     href: '/dashboard',             icon: LayoutDashboard, section: 'principal' },
-  { label: 'Meus veículos', href: '/dashboard/veiculos',    icon: Car,             section: 'principal' },
-  { label: 'Manutenções',   href: '/dashboard/manutencoes', icon: Wrench,          section: 'principal' },
-  { label: 'Despesas',      href: '/dashboard/despesas',    icon: DollarSign,      section: 'financas'  },
-  { label: 'Assistente IA', href: '/dashboard/ia',          icon: Sparkles,        section: 'financas'  },
+const nav = [
+  { label: 'Dashboard',     href: '/dashboard',             icon: LayoutDashboard, group: 'main' },
+  { label: 'Meus veículos', href: '/dashboard/veiculos',    icon: Car,             group: 'main' },
+  { label: 'Manutenções',   href: '/dashboard/manutencoes', icon: Wrench,          group: 'main' },
+  { label: 'Despesas',      href: '/dashboard/despesas',    icon: DollarSign,      group: 'fin'  },
+  { label: 'Assistente IA', href: '/dashboard/ia',          icon: Sparkles,        group: 'fin'  },
 ]
 
 type Props = { userName: string; userEmail: string }
 
 export default function Sidebar({ userName, userEmail }: Props) {
-  const pathname  = usePathname()
-  const router    = useRouter()
-  const supabase  = createClient()
-  const [open, setOpen] = useState(false)
-  const initials  = getInitials(userName, userEmail)
+  const pathname = usePathname()
+  const router   = useRouter()
+  const supabase = createClient()
+  const initials = getInitials(userName, userEmail)
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -38,132 +35,80 @@ export default function Sidebar({ userName, userEmail }: Props) {
     return pathname.startsWith(href)
   }
 
-  const NavContent = () => (
-    <>
+  return (
+    <aside className="sidebar">
       {/* Logo */}
-      <div className="px-4 py-5 flex items-center justify-between border-b border-gray-100">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Car size={16} className="text-white" />
-          </div>
-          <span className="font-semibold text-[15px] text-gray-900">AutoGest</span>
+      <div className="sidebar-logo">
+        <div className="sidebar-logo-icon">
+          <Car size={18} className="text-white" />
         </div>
-        {/* Botão fechar no mobile */}
-        <button onClick={() => setOpen(false)} className="lg:hidden p-1 rounded-lg hover:bg-gray-100">
-          <X size={18} className="text-gray-400" />
-        </button>
+        <span className="sidebar-logo-name">AutoGest</span>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-2 py-4 flex flex-col gap-0.5 overflow-y-auto">
-        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider px-2 mb-1">
-          Principal
-        </p>
-        {navItems.filter(i => i.section === 'principal').map(item => (
-          <Link
-            key={item.href} href={item.href}
-            onClick={() => setOpen(false)}
-            className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-[13px] transition-colors group ${
-              isActive(item.href)
-                ? 'bg-blue-50 text-blue-700 font-medium'
-                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-            }`}
-          >
-            <item.icon size={16} className={isActive(item.href) ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'} />
-            {item.label}
-            {isActive(item.href) && <ChevronRight size={12} className="ml-auto text-blue-400" />}
-          </Link>
-        ))}
-
-        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider px-2 mt-4 mb-1">
-          Finanças & IA
-        </p>
-        {navItems.filter(i => i.section === 'financas').map(item => {
-          const active = isActive(item.href)
-          const isIA   = item.href.includes('ia')
-          return (
+      <nav className="flex-1 py-3 overflow-y-auto">
+        <p className="sidebar-section">Principal</p>
+        <div className="sidebar-nav">
+          {nav.filter(i => i.group === 'main').map(item => (
             <Link
-              key={item.href} href={item.href}
-              onClick={() => setOpen(false)}
-              className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-[13px] transition-colors group ${
-                active
-                  ? isIA ? 'bg-purple-50 text-purple-700 font-medium' : 'bg-blue-50 text-blue-700 font-medium'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-              }`}
+              key={item.href}
+              href={item.href}
+              className={`sidebar-item ${isActive(item.href) ? 'active' : ''}`}
             >
-              <item.icon size={16} className={
-                active
-                  ? isIA ? 'text-purple-600' : 'text-blue-600'
-                  : 'text-gray-400 group-hover:text-gray-600'
-              } />
+              <item.icon size={15} />
               {item.label}
-              {isIA && !active && (
-                <span className="ml-auto text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full font-medium">Pro</span>
-              )}
-              {active && <ChevronRight size={12} className="ml-auto" />}
             </Link>
-          )
-        })}
+          ))}
+        </div>
 
-        <div className="mt-auto pt-4">
+        <p className="sidebar-section mt-3">Finanças & IA</p>
+        <div className="sidebar-nav">
+          {nav.filter(i => i.group === 'fin').map(item => {
+            const active = isActive(item.href)
+            const isIA   = item.href.includes('/ia')
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`sidebar-item ${active ? (isIA ? 'active-violet' : 'active') : ''}`}
+              >
+                <item.icon size={15} />
+                {item.label}
+                {isIA && !active && <span className="sidebar-pro-badge">Pro</span>}
+              </Link>
+            )
+          })}
+        </div>
+
+        <p className="sidebar-section mt-3">Conta</p>
+        <div className="sidebar-nav">
           <Link
             href="/dashboard/configuracoes"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            className={`sidebar-item ${pathname.startsWith('/dashboard/configuracoes') ? 'active' : ''}`}
           >
-            <Settings size={16} className="text-gray-400" />
+            <Settings size={15} />
             Configurações
           </Link>
         </div>
       </nav>
 
       {/* Usuário */}
-      <div className="px-3 py-3 border-t border-gray-100">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-[11px] font-medium text-blue-700 flex-shrink-0">
-            {initials}
-          </div>
+      <div className="sidebar-footer">
+        <div className="sidebar-user">
+          <div className="sidebar-avatar">{initials}</div>
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-medium text-gray-900 truncate">{userName || 'Usuário'}</p>
-            <p className="text-[11px] text-gray-400 truncate">{userEmail}</p>
+            <p className="sidebar-user-name truncate">{userName || 'Usuário'}</p>
+            <p className="sidebar-user-email truncate">{userEmail}</p>
           </div>
-          <button onClick={handleLogout} className="p-1.5 rounded-md hover:bg-gray-100 transition-colors" title="Sair">
-            <LogOut size={14} className="text-gray-400" />
+          <button
+            onClick={handleLogout}
+            className="p-1.5 rounded-lg transition-colors hover:bg-white/10 flex-shrink-0"
+            title="Sair"
+          >
+            <LogOut size={13} style={{ color: 'rgba(255,255,255,.35)' }} />
           </button>
         </div>
       </div>
-    </>
-  )
-
-  return (
-    <>
-      {/* Botão hamburguer — só no mobile */}
-      <button
-        onClick={() => setOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 w-9 h-9 bg-white border border-gray-200 rounded-xl flex items-center justify-center shadow-sm"
-      >
-        <Menu size={18} className="text-gray-600" />
-      </button>
-
-      {/* Overlay — só no mobile quando aberto */}
-      {open && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/40 z-40"
-          onClick={() => setOpen(false)}
-        />
-      )}
-
-      {/* Sidebar — drawer no mobile, fixa no desktop */}
-      <aside className={`
-        fixed lg:static inset-y-0 left-0 z-50
-        w-[220px] min-w-[220px] h-screen
-        bg-white border-r border-gray-100
-        flex flex-col
-        transform transition-transform duration-200 ease-in-out
-        ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        <NavContent />
-      </aside>
-    </>
+    </aside>
   )
 }
