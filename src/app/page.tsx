@@ -48,7 +48,7 @@ export default function LandingPage() {
           Inteligência Artificial integrada · Novo
         </div>
 
-        <h1 style={{ fontSize: 52, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-2px', lineHeight: 1.1, marginBottom: 20 }}>
+        <h1 style={{ fontSize: 'clamp(28px, 6vw, 52px)', fontWeight: 800, color: '#0c0e1a', letterSpacing: '-2px', lineHeight: 1.1, marginBottom: 20 }}>
           Seu carro merece<br />
           <span style={{ color: '#1a56db' }}>gestão inteligente</span>
         </h1>
@@ -106,7 +106,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── STATS ── */}
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', borderBottom: '1.5px solid #e2e7f2' }}>
+      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', borderBottom: '1.5px solid #e2e7f2' }}>
         {[
           { val: 'R$ 847',  label: 'Economizados por usuário ao ano' },
           { val: '94%',     label: 'Evitam manutenções atrasadas' },
@@ -116,7 +116,7 @@ export default function LandingPage() {
             padding: '28px 40px', textAlign: 'center',
             borderRight: i < 2 ? '1.5px solid #e2e7f2' : 'none',
           }}>
-            <div style={{ fontSize: 36, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px', marginBottom: 4 }}>
+            <div style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px', marginBottom: 4 }}>
               {s.val}
             </div>
             <div style={{ fontSize: 12, color: '#9ca3af', fontWeight: 500 }}>{s.label}</div>
@@ -125,7 +125,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section style={{ padding: '72px 40px', borderBottom: '1.5px solid #e2e7f2' }}>
+      <section style={{ padding: 'clamp(32px, 6vw, 72px) clamp(16px, 5vw, 40px)', borderBottom: '1.5px solid #e2e7f2' }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 5,
           fontSize: 11, fontWeight: 700, color: '#1035a0',
@@ -195,12 +195,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section style={{ padding: '72px 40px', background: '#f1f4fb', borderBottom: '1.5px solid #e2e7f2' }}>
+      <section style={{ padding: 'clamp(32px, 6vw, 72px) clamp(16px, 5vw, 40px)', background: '#f1f4fb', borderBottom: '1.5px solid #e2e7f2' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#1035a0', background: '#eff6ff', padding: '4px 12px', borderRadius: 20, border: '1.5px solid #bdd3ff', marginBottom: 12 }}>
           Depoimentos
         </div>
         <h2 style={{ fontSize: 32, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-.8px', marginBottom: 28 }}>Quem usa, não larga</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
           {[
             { text: '"A IA mostrou que eu gastava 40% acima da média com combustível. Ajustei os hábitos e economizei R$ 180 no primeiro mês."', name: 'Carlos Roberto', role: 'Motorista de app · SP', av: 'CR', bg: '#eff6ff', color: '#1035a0' },
             { text: '"Tenho 3 carros na família. O alerta de manutenção salvou meu carro de um problema grave na suspensão que eu nem sabia que estava vindo."', name: 'Ana Martins', role: 'Empresária · RJ', av: 'AM', bg: '#ecfdf5', color: '#065f46' },
@@ -228,19 +228,19 @@ export default function LandingPage() {
       </section>
 
       {/* ── PRICING ── */}
-      <section style={{ padding: '72px 40px', borderBottom: '1.5px solid #e2e7f2' }}>
+      <section style={{ padding: 'clamp(32px, 6vw, 72px) clamp(16px, 5vw, 40px)', borderBottom: '1.5px solid #e2e7f2' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#1035a0', background: '#eff6ff', padding: '4px 12px', borderRadius: 20, border: '1.5px solid #bdd3ff', marginBottom: 12 }}>
           Planos
         </div>
         <h2 style={{ fontSize: 32, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-.8px', marginBottom: 8 }}>Simples e transparente</h2>
         <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 36 }}>Comece grátis. Evolua quando precisar. Cancele quando quiser.</p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
           {/* FREE */}
           <div style={{ background: '#fff', border: '1.5px solid #e2e7f2', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column' as const }}>
             <div style={{ fontSize: 18, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-.4px', marginBottom: 3 }}>Gratuito</div>
             <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 18 }}>Para começar a organizar</div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px', marginBottom: 4 }}>R$ 0</div>
+            <div style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px', marginBottom: 4 }}>R$ 0</div>
             <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 20 }}>para sempre</div>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 9, flex: 1, marginBottom: 20 }}>
               {['1 veículo cadastrado', 'Manutenções e alertas', 'Controle de despesas'].map(item => (
@@ -267,7 +267,7 @@ export default function LandingPage() {
             <div style={{ fontSize: 18, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-.4px', marginBottom: 3 }}>Essencial</div>
             <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 18 }}>Para quem quer controle total</div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 3, marginBottom: 4 }}>
-              <span style={{ fontSize: 36, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px' }}>R$ 19,90</span>
+              <span style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px' }}>R$ 19,90</span>
               <span style={{ fontSize: 12, color: '#9ca3af' }}>/mês</span>
             </div>
             <div style={{ fontSize: 11, color: '#065f46', fontWeight: 600, marginBottom: 20 }}>ou R$ 15,92/mês no anual</div>
@@ -296,7 +296,7 @@ export default function LandingPage() {
             <div style={{ fontSize: 18, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-.4px', marginBottom: 3 }}>Pro + IA</div>
             <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 18 }}>Com inteligência artificial</div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 3, marginBottom: 4 }}>
-              <span style={{ fontSize: 36, fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px' }}>R$ 29,90</span>
+              <span style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#0c0e1a', letterSpacing: '-1.5px' }}>R$ 29,90</span>
               <span style={{ fontSize: 12, color: '#9ca3af' }}>/mês</span>
             </div>
             <div style={{ fontSize: 11, color: '#4c1d95', fontWeight: 600, marginBottom: 20 }}>ou R$ 23,92/mês no anual</div>
@@ -322,11 +322,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA FINAL ── */}
-      <section style={{ padding: '72px 40px', background: '#0c0e1a', textAlign: 'center' }}>
+      <section style={{ padding: 'clamp(32px, 6vw, 72px) clamp(16px, 5vw, 40px)', background: '#0c0e1a', textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, background: 'rgba(255,255,255,.1)', color: '#fff', padding: '5px 14px', borderRadius: 20, marginBottom: 20, letterSpacing: '.03em' }}>
           Sem cartão de crédito para começar
         </div>
-        <h2 style={{ fontSize: 36, fontWeight: 800, color: '#fff', letterSpacing: '-.8px', marginBottom: 10 }}>
+        <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#fff', letterSpacing: '-.8px', marginBottom: 10 }}>
           Pronto para ter controle<br />total do seu veículo?
         </h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,.5)', marginBottom: 32 }}>
@@ -349,7 +349,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ padding: '24px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1.5px solid #e2e7f2' }}>
+      <footer style={{ padding: 'clamp(16px, 3vw, 24px) clamp(16px, 5vw, 40px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1.5px solid #e2e7f2' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 26, height: 26, background: '#1a56db', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="white">

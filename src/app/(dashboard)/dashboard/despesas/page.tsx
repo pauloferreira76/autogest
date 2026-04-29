@@ -1,80 +1,109 @@
 import { createClient } from '@/lib/supabase-server'
 import { formatCurrency, formatDate, categoriasLabel, categoriasCor } from '@/lib/utils'
-import { DollarSign, Plus } from 'lucide-react'
+import { DollarSign, Plus, TrendingUp, TrendingDown, Receipt } from 'lucide-react'
 import Link from 'next/link'
+
+const categoriaIcone: Record<string, string> = {
+  combustivel: '⛽', manutencao: '🔧', seguro: '🛡️',
+  multa: '🚨', ipva: '📋', outros: '📦',
+}
 
 export default async function DespesasPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
-  const [{ data: despesas }, { data: veiculos }] = await Promise.all([
-    supabase.from('despesas').select('*, veiculos(apelido)').eq('user_id', user!.id).order('data', { ascending: false }),
-    supabase.from('veiculos').select('id, apelido').eq('user_id', user!.id),
-  ])
+  const { data: despesas } = await supabase
+    .from('despesas').select('*, veiculos(apelido)')
+    .eq('user_id', user!.id).order('data', { ascending: false })
 
   const total = (despesas ?? []).reduce((acc, d) => acc + Number(d.valor), 0)
+  const media = despesas?.length ? total / despesas.length : 0
+  const agora = new Date()
+  const inicioMes = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-01`
+  const gastoMes = (despesas ?? []).filter(d => d.data >= inicioMes).reduce((acc, d) => acc + Number(d.valor), 0)
+  const porCategoria = (despesas ?? []).reduce((acc: Record<string, number>, d) => {
+    acc[d.categoria] = (acc[d.categoria] || 0) + Number(d.valor); return acc
+  }, {})
+  const topCategoria = Object.entries(porCategoria).sort((a, b) => b[1] - a[1])[0]
 
   return (
-    <div className="max-w-4xl">
-      {/* Totalizador */}
-      {despesas && despesas.length > 0 && (
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-xl border border-gray-100 p-4">
-            <p className="text-[12px] text-gray-400 mb-1">Total gasto</p>
-            <p className="text-[22px] font-semibold text-gray-900">{formatCurrency(total)}</p>
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 p-4">
-            <p className="text-[12px] text-gray-400 mb-1">Registros</p>
-            <p className="text-[22px] font-semibold text-gray-900">{despesas.length}</p>
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 p-4">
-            <p className="text-[12px] text-gray-400 mb-1">Média por registro</p>
-            <p className="text-[22px] font-semibold text-gray-900">
-              {formatCurrency(total / despesas.length)}
-            </p>
-          </div>
+    <div style={{ maxWidth: 860 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 20 }}>
+        <div className="metric-card accent-brand">
+          <div className="metric-icon" style={{ background: 'var(--brand-bg)' }}><DollarSign size={18} style={{ color: 'var(--brand)' }} /></div>
+          <p className="metric-label">Total acumulado</p>
+          <p className="metric-value">{formatCurrency(total)}</p>
+          <p className="metric-sub">{despesas?.length ?? 0} registros</p>
         </div>
-      )}
+        <div className="metric-card accent-emerald">
+          <div className="metric-icon" style={{ background: 'var(--emerald-bg)' }}><Receipt size={18} style={{ color: 'var(--emerald)' }} /></div>
+          <p className="metric-label">Gasto este mês</p>
+          <p className="metric-value">{formatCurrency(gastoMes)}</p>
+          <p className="metric-sub">{agora.toLocaleString('pt-BR', { month: 'long' })}</p>
+        </div>
+        <div className="metric-card accent-amber">
+          <div className="metric-icon" style={{ background: 'var(--amber-bg)' }}><TrendingUp size={18} style={{ color: 'var(--amber)' }} /></div>
+          <p className="metric-label">Média por registro</p>
+          <p className="metric-value">{formatCurrency(media)}</p>
+          <p className="metric-sub">por lançamento</p>
+        </div>
+        <div className="metric-card accent-violet">
+          <div className="metric-icon" style={{ background: 'var(--violet-bg)' }}><TrendingDown size={18} style={{ color: 'var(--violet)' }} /></div>
+          <p className="metric-label">Maior categoria</p>
+          <p className="metric-value" style={{ fontSize: '1rem' }}>{topCategoria ? categoriasLabel[topCategoria[0] as keyof typeof categoriasLabel] : '—'}</p>
+          <p className="metric-sub">{topCategoria ? formatCurrency(topCategoria[1]) : '—'}</p>
+        </div>
+      </div>
 
-      <div className="bg-white rounded-xl border border-gray-100">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 className="text-[14px] font-medium text-gray-900">Histórico de despesas</h2>
-          <Link
-            href="/dashboard/despesas/nova"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-[12px] font-medium rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus size={12} /> Nova despesa
+      <div className="card">
+        <div className="card-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <div style={{ width: 30, height: 30, background: 'var(--brand-bg)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Receipt size={14} style={{ color: 'var(--brand)' }} />
+            </div>
+            <p className="card-title">Histórico de despesas</p>
+          </div>
+          <Link href="/dashboard/despesas/nova" className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <Plus size={13} /> Nova despesa
           </Link>
         </div>
 
         {!despesas || despesas.length === 0 ? (
-          <div className="p-16 text-center">
-            <DollarSign size={36} className="text-gray-200 mx-auto mb-3" />
-            <p className="text-[14px] font-medium text-gray-900 mb-1">Nenhuma despesa registrada</p>
-            <p className="text-[13px] text-gray-400 mb-5">Registre seus gastos para ter controle financeiro.</p>
-            <Link
-              href="/dashboard/despesas/nova"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-[13px] font-medium rounded-xl hover:bg-blue-700 transition-colors"
-            >
+          <div className="empty-state">
+            <div className="empty-icon"><DollarSign size={26} style={{ color: 'var(--ink-4)' }} /></div>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>Nenhuma despesa registrada</h3>
+            <p style={{ fontSize: 13, color: 'var(--ink-3)' }}>Registre seus gastos para ter controle financeiro.</p>
+            <Link href="/dashboard/despesas/nova" className="btn btn-primary" style={{ marginTop: 8, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               <Plus size={14} /> Registrar despesa
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-gray-50">
-            {despesas.map((d: any) => (
-              <div key={d.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-gray-900">{d.descricao || categoriasLabel[d.categoria as keyof typeof categoriasLabel]}</p>
-                  <p className="text-[11px] text-gray-400">{d.veiculos?.apelido} · {formatDate(d.data)}</p>
+          <div>
+            {despesas.map((d: any, i: number) => (
+              <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 20px', borderBottom: i < despesas.length - 1 ? '1px solid var(--bdr)' : 'none', transition: 'background .1s' }}>
+                <div style={{ width: 40, height: 40, borderRadius: 11, background: 'var(--surf-3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+                  {categoriaIcone[d.categoria] || '📦'}
                 </div>
-                <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${categoriasCor[d.categoria as keyof typeof categoriasCor]}`}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {d.descricao || categoriasLabel[d.categoria as keyof typeof categoriasLabel]}
+                  </p>
+                  <p style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 2 }}>{d.veiculos?.apelido} · {formatDate(d.data)}</p>
+                </div>
+                <span className={`badge hide-mobile ${categoriasCor[d.categoria as keyof typeof categoriasCor] || 'badge-gray'}`}>
                   {categoriasLabel[d.categoria as keyof typeof categoriasLabel]}
                 </span>
-                <p className="text-[14px] font-semibold text-gray-900 flex-shrink-0 w-24 text-right">
+                <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--ink)', fontFamily: 'var(--mono)', flexShrink: 0, minWidth: 90, textAlign: 'right' }}>
                   {formatCurrency(Number(d.valor))}
                 </p>
               </div>
             ))}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', background: 'var(--surf-2)', borderTop: '1.5px solid var(--bdr)' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-3)' }}>{despesas.length} registro{despesas.length !== 1 ? 's' : ''}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>Total:</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)', fontFamily: 'var(--mono)' }}>{formatCurrency(total)}</span>
+              </div>
+            </div>
           </div>
         )}
       </div>
