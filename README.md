@@ -1,27 +1,27 @@
-# AutoGest — OCR + Relatórios
+# AutoGest — Layout Responsivo
 
 ## Arquivos incluídos
 
 ```
-autogest-modules/
+autogest-responsive/
 ├── src/
 │   ├── app/
-│   │   ├── api/ocr/route.ts                          → src/app/api/ocr/route.ts
-│   │   └── (dashboard)/
-│   │       ├── despesas/nova/page.tsx                → src/app/(dashboard)/despesas/nova/page.tsx
-│   │       └── relatorios/page.tsx                   → src/app/(dashboard)/relatorios/page.tsx
+│   │   ├── globals.css                           → src/app/globals.css
+│   │   └── (dashboard)/layout.tsx                → src/app/(dashboard)/layout.tsx
 │   └── components/dashboard/
-│       ├── Sidebar.tsx                               → src/components/dashboard/Sidebar.tsx
-│       └── Topbar.tsx                                → src/components/dashboard/Topbar.tsx
+│       ├── Sidebar.tsx                           → src/components/dashboard/Sidebar.tsx
+│       ├── Topbar.tsx                            → src/components/dashboard/Topbar.tsx
+│       ├── BottomNav.tsx                         → src/components/dashboard/BottomNav.tsx
+│       └── DashboardShell.tsx                    → src/components/dashboard/DashboardShell.tsx
 ```
 
 ## Como aplicar
 
-Copie os arquivos para as pastas correspondentes e faça o deploy:
+Copie os arquivos e faça o deploy:
 
 ```bash
 git add .
-git commit -m "adiciona OCR de notas fiscais e relatórios com gráficos"
+git commit -m "layout responsivo — mobile, tablet e desktop"
 git push origin main
 ```
 
@@ -33,28 +33,33 @@ npm run build
 pm2 restart autogest --update-env
 ```
 
-## Como funciona o OCR
+## O que foi implementado
 
-1. Usuário acessa "Nova Despesa"
-2. Clica em "Escanear nota fiscal" e faz upload da imagem
-3. A API `/api/ocr` envia a imagem para o Claude Vision
-4. Claude extrai: valor, data, descrição, categoria e estabelecimento
-5. O formulário é preenchido automaticamente
-6. Usuário revisa e salva
+### Mobile (< 768px)
+- Sidebar escondida por padrão, abre com botão hamburguer
+- Overlay escuro ao abrir o menu com blur
+- Bottom Navigation Bar com 5 ícones (Início, Veículos, Manutenções, Despesas, IA)
+- Touch targets mínimos de 44px em todos os botões
+- Padding seguro para notch e home indicator (safe-area-inset)
+- Botão CTA encurtado ("Novo" em vez do texto completo)
+- Painel de notificações adaptado para largura da tela
 
-Formatos suportados: JPG, PNG, WEBP, PDF (máx. 10MB)
+### Tablet (768px - 1023px)
+- Sidebar hamburguer (mesmo padrão do mobile)
+- Grid de 2 colunas para métricas
+- Layout de conteúdo em coluna única
 
-## Relatórios
+### Desktop (≥ 1024px)
+- Sidebar fixa na esquerda
+- Grid de 4 colunas para métricas
+- Layout de 2 colunas no dashboard
+- Topbar sem botão hamburguer
 
-Acesse em: `/dashboard/relatorios`
-
-Gráficos disponíveis:
-- **Gastos por mês** — barras com comparativo anual
-- **Por categoria** — pizza com percentuais
-- **Por veículo** — barras horizontais com custo/km
-
-Filtros: por ano e por veículo
-
-Exportação:
-- **CSV** — abre o Excel direto com todos os dados
-- **PDF** — usa o print do navegador (Ctrl+P)
+### Grids responsivos (use nas páginas)
+- `.metrics-grid` — 4 cols → 2 cols → 2 cols
+- `.dashboard-grid` — 1.5fr 1fr → 1fr
+- `.two-col` — 1fr 1fr → 1fr
+- `.three-col` — 3 cols → 2 cols → 1 col
+- `.form-grid-2` — 2 cols → 1 col
+- `.config-layout` — horizontal → vertical (abas)
+- `.table-wrap` — scroll horizontal em tabelas
