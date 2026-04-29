@@ -213,10 +213,10 @@ export default function ConfiguracoesPage() {
   }
 
   return (
-    <div className="flex gap-6 max-w-5xl">
+    <div className="flex gap-6 max-w-5xl" style={{ flexWrap: "wrap" }}>
 
       {/* Sidebar de navegação */}
-      <div className="w-48 flex-shrink-0 flex flex-col gap-1">
+      <div className="flex-shrink-0 flex gap-1" style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", minWidth: 0 }} >
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] text-sm font-medium transition-all text-left w-full"
