@@ -76,9 +76,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: String(resultado.erro) }, { status: 422 })
     }
 
+    // Valida data — alerta se muito antiga (> 2 anos) ou futura
+    const dataExtraida = new Date(String(resultado.data ?? ''))
+    const hoje = new Date()
+    const seiseMesesAtras = new Date(); seiseMesesAtras.setMonth(hoje.getMonth() - 6)
+    let avisoData = ''
+    if (!isNaN(dataExtraida.getTime())) {
+      if (dataExtraida > hoje) avisoData = 'Data futura detectada. Verifique a data da nota.'
+      else if (dataExtraida < seiseMesesAtras) avisoData = `Data antiga detectada (${dataExtraida.toLocaleDateString("pt-BR")}). Confirme se está correta.`
+    }
+
     return NextResponse.json({
       valor:           Number(resultado.valor),
       data:            String(resultado.data            ?? new Date().toISOString().split('T')[0]),
+      aviso_data:      avisoData,
       descricao:       String(resultado.descricao       ?? ''),
       categoria:       String(resultado.categoria       ?? 'outros'),
       estabelecimento: String(resultado.estabelecimento ?? ''),

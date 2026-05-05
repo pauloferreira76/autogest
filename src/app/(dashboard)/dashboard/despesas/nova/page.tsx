@@ -13,7 +13,7 @@ import type { Veiculo, CategoriasDespesa } from '@/types'
 type OCRStatus = 'idle' | 'processando' | 'sucesso' | 'erro'
 type OCRResultado = {
   valor: number; data: string; descricao: string
-  categoria: CategoriasDespesa; estabelecimento: string; confianca: 'alta'|'media'|'baixa'
+  categoria: CategoriasDespesa; estabelecimento: string; confianca: 'alta'|'media'|'baixa'; aviso_data?: string
 }
 
 export default function NovaDespesaPage() {
@@ -175,6 +175,12 @@ export default function NovaDespesaPage() {
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: confiancaCor[ocrResultado.confianca], flexShrink: 0 }} />
                 <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--ink-3)' }}>{confiancaLabel[ocrResultado.confianca]}</span>
               </div>
+              {ocrResultado.aviso_data && (
+                <div className="alert alert-amber" style={{ marginTop: 8 }}>
+                  <AlertTriangle size={13} style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 11 }}>{ocrResultado.aviso_data}</span>
+                </div>
+              )}
               <p style={{ fontSize: 11, color: 'var(--ink-4)' }}>Os campos abaixo foram preenchidos automaticamente. Revise antes de salvar.</p>
             </div>
           )}
